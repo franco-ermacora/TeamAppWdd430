@@ -47,3 +47,10 @@ A web application for cataloging and tracking trading card collections — inclu
   * Text Muted: Light Grey (`text-zinc-400`)
 * **Typography:** `Geist Sans` or `Inter` for optimal legibility of data tables.
 * **Layout & Spacing:** Strict Tailwind grid system (`grid-cols-1 md:grid-cols-3`) for fully responsive desktop and mobile viewports.
+# TeamAppWdd430
+
+A web application for cataloging and tracking trading card collections — including quantity, condition, and estimated value.
+
+## Team
+- Sebastian Sosa
+- Franco Ermacora
