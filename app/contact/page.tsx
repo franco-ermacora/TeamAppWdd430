@@ -19,9 +19,12 @@ export default function ContactPage() {
         </div>
 
         <div className="space-y-4 text-sm">
-          <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+          {/* Corregido: flex-col en móviles para que no se pise el texto */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800 pb-3 gap-2">
             <span className="text-zinc-400">Support Email</span>
-            <span className="font-mono text-violet-400">support@cardvault.internal</span>
+            <span className="font-mono text-violet-400 text-xs sm:text-sm break-all text-right sm:text-left">
+              support@cardvault.internal
+            </span>
           </div>
           <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
             <span className="text-zinc-400">Response Time</span>

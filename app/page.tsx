@@ -1,10 +1,12 @@
 import Link from 'next/link';
+import { MASTER_CARDS } from '@/lib/masterCards';
 
+// Definimos las cartas destacadas haciendo coincidir sus nombres con algunas de las 120 cartas de MASTER_CARDS
 const FEATURED_CARDS = [
-  { id: '1', name: 'Blue-Eyes White Dragon', set: 'LOB-001', rarity: 'Ultra Rare' },
-  { id: '2', name: 'Dark Magician', set: 'LOB-005', rarity: 'Super Rare' },
-  { id: '3', name: 'Exodia the Forbidden One', set: 'LOB-124', rarity: 'Secret Rare' },
-  { id: '4', name: 'Red-Eyes B. Dragon', set: 'LOB-070', rarity: 'Rare' },
+  { id: '1', name: 'Fierce Phoenix', set: 'LOB-001', rarity: 'Ultra Rare' },
+  { id: '2', name: 'Ancient Sphinx', set: 'MRD-045', rarity: 'Super Rare' },
+  { id: '3', name: 'Eternal Griffin', set: 'PSV-012', rarity: 'Secret Rare' },
+  { id: '4', name: 'Wild Chimera', set: 'SDK-003', rarity: 'Rare' },
 ];
 
 export default function HomePage() {
@@ -45,7 +47,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Cards Showcase / Estilo Plantilla TCG */}
+      {/* Featured Cards Showcase */}
       <section className="space-y-6">
         <div className="flex justify-between items-end border-b border-zinc-800 pb-4">
           <div>
@@ -58,36 +60,53 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
-          {FEATURED_CARDS.map((card) => (
-            <div
-              key={card.id}
-              className="w-full max-w-[260px] bg-amber-950/80 border-4 border-amber-600 rounded-xl p-3 flex flex-col justify-between shadow-xl hover:scale-[1.02] transition-transform"
-            >
-              {/* Header de la Carta */}
-              <div className="bg-amber-900/90 border border-amber-500/50 rounded p-1.5 mb-2 flex justify-between items-center">
-                <h3 className="font-extrabold text-xs text-amber-100 uppercase tracking-wider truncate">{card.name}</h3>
-                <span className="text-[10px] bg-amber-950 text-amber-400 font-bold px-1.5 py-0.5 rounded border border-amber-500/40 shrink-0">
-                  {card.rarity}
-                </span>
-              </div>
+          {FEATURED_CARDS.map((card) => {
+            // Buscamos la carta real en MASTER_CARDS por ID o coincidencia exacta de nombre
+            const masterMatch = MASTER_CARDS.find((m) => m.id === card.id || m.name.toLowerCase() === card.name.toLowerCase());
 
-              {/* Arte de la Carta */}
-              <div className="relative w-full h-36 bg-zinc-950 border-2 border-amber-700/60 rounded flex items-center justify-center text-zinc-500 text-[10px] font-mono mb-2">
-                [Card Preview Art]
-              </div>
+            const imageSrc = masterMatch ? masterMatch.image : null;
+            const borderColor = masterMatch ? masterMatch.borderColor : 'border-amber-600 bg-amber-950/80';
+            const cardValue = masterMatch ? masterMatch.cardValue : 50;
+            const rarity = masterMatch ? masterMatch.rarity : card.rarity;
+            const set = masterMatch ? masterMatch.set : card.set;
 
-              {/* Set info */}
-              <div className="text-[10px] text-amber-300/80 mb-1 font-mono flex justify-between">
-                <span>SET: {card.set}</span>
-                <span>[CardVault]</span>
-              </div>
+            return (
+              <div
+                key={card.id}
+                className={`w-full max-w-[260px] border-4 rounded-xl p-3 flex flex-col justify-between shadow-xl hover:scale-[1.02] transition-transform ${borderColor}`}
+              >
+                {/* Header de la Carta */}
+                <div className="bg-amber-900/90 border border-amber-500/50 rounded p-1.5 mb-2 flex justify-between items-center">
+                  <h3 className="font-extrabold text-xs text-amber-100 uppercase tracking-wider truncate">{card.name}</h3>
+                  <span className="text-[10px] bg-amber-950 text-amber-400 font-bold px-1.5 py-0.5 rounded border border-amber-500/40 shrink-0">
+                    {rarity}
+                  </span>
+                </div>
 
-              {/* Descripción fija */}
-              <div className="bg-amber-100/90 text-zinc-900 border border-amber-700 p-2 rounded text-[10px] leading-tight italic">
-                A premier collectible card featured in the CardVault main archives.
+                {/* Arte de la Carta (Cuadrado con imagen real) */}
+                <div className="relative w-full aspect-square bg-zinc-950 border-2 border-amber-700/60 rounded overflow-hidden mb-2">
+                  {imageSrc ? (
+                    <img src={imageSrc} alt={card.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-zinc-500 text-[10px] font-mono">
+                      [Card Preview Art]
+                    </div>
+                  )}
+                </div>
+
+                {/* Set info y Precio */}
+                <div className="text-[10px] text-amber-300/80 mb-1 font-mono flex justify-between">
+                  <span>SET: {set}</span>
+                  <span className="text-emerald-400 font-bold">${cardValue} USD</span>
+                </div>
+
+                {/* Descripción fija */}
+                <div className="bg-amber-100/90 text-zinc-900 border border-amber-700 p-2 rounded text-[10px] leading-tight italic">
+                  A premier collectible card featured in the CardVault main archives.
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
