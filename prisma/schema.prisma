@@ -17,13 +17,16 @@ model User {
 }
 
 model CollectionCard {
-  id        String   @id @default(cuid())
-  name      String
-  set       String
-  rarity    String
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  name        String
+  set         String
+  rarity      String
+  image       String?
+  description String?
+  cardValue   Float?   @default(0.0)
+  quantity    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -32,13 +35,16 @@ model CollectionCard {
 }
 
 model WishlistCard {
-  id        String   @id @default(cuid())
-  name      String
-  set       String
-  rarity    String
-  priority  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  name        String
+  set         String
+  rarity      String
+  image       String?
+  description String?
+  cardValue   Float?   @default(0.0)
+  priority    Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
