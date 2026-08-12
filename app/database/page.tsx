@@ -1,7 +1,5 @@
 import { MASTER_CARDS } from '@/lib/masterCards';
 import { addCollectionCard, addWishlistCard } from '@/lib/actions';
-import { auth } from '@clerk/nextjs/server';
-import { SignInButton } from '@clerk/nextjs';
 import Link from 'next/link';
 import Form from 'next/form';
 
@@ -10,26 +8,6 @@ const ITEMS_PER_PAGE = 12;
 export default async function DatabasePage(props: {
   searchParams?: Promise<{ query?: string; page?: string }>;
 }) {
-  const { userId: clerkId } = await auth();
-
-  if (!clerkId) {
-    return (
-      <main className="max-w-4xl mx-auto px-6 py-20 text-center text-white space-y-6">
-        <h1 className="text-3xl font-extrabold text-violet-500">Authentication Required</h1>
-        <p className="text-zinc-400 text-sm">
-          You need to be signed in to view and add cards from the master database.
-        </p>
-        <div>
-          <SignInButton mode="modal">
-            <button className="bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm px-6 py-3 rounded-lg transition shadow-lg">
-              Sign In Now
-            </button>
-          </SignInButton>
-        </div>
-      </main>
-    );
-  }
-
   const searchParams = await props.searchParams;
   const query = searchParams?.query?.toLowerCase() ?? '';
   const currentPage = Number(searchParams?.page) || 1;
@@ -73,67 +51,72 @@ export default async function DatabasePage(props: {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-items-center">
-          {currentCards.map((card) => (
-            <div
-              key={card.id}
-              className={`w-full max-w-[280px] border-4 rounded-xl p-3 flex flex-col justify-between shadow-2xl ${card.borderColor}`}
-            >
-              <div>
-                <div className="bg-zinc-900/90 border border-zinc-700/50 rounded p-1.5 mb-2 flex justify-between items-center">
-                  <h3 className="font-extrabold text-xs text-zinc-100 uppercase truncate">{card.name}</h3>
-                  <span className="text-[10px] bg-zinc-950 text-zinc-300 font-bold px-1.5 py-0.5 rounded border border-zinc-700">
-                    {card.rarity}
-                  </span>
+          {currentCards.map((card) => {
+            const borderColor = card.borderColor || 'border-amber-600 bg-amber-950/80';
+
+            return (
+              <div
+                key={card.id}
+                className={`w-full max-w-[280px] border-4 rounded-xl p-3 flex flex-col justify-between shadow-2xl ${borderColor}`}
+              >
+                <div>
+                  {/* Cabecera estilo TCG con fondo marrón/ámbar */}
+                  <div className="bg-amber-900/90 border border-amber-500/50 rounded p-1.5 mb-2 flex justify-between items-center">
+                    <h3 className="font-extrabold text-xs text-amber-100 uppercase truncate">{card.name}</h3>
+                    <span className="text-[10px] bg-amber-950 text-amber-400 font-bold px-1.5 py-0.5 rounded border border-amber-500/40">
+                      {card.rarity}
+                    </span>
+                  </div>
+
+                  {/* Imagen Cuadrada con marco a juego */}
+                  <div className="relative w-full aspect-square bg-zinc-950 border-2 border-amber-700/60 rounded overflow-hidden mb-2">
+                    <img
+                      src={card.image}
+                      alt={card.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="text-[10px] text-amber-300/80 mb-1 font-mono flex justify-between">
+                    <span>SET: {card.set}</span>
+                    <span className="text-emerald-400 font-bold">${card.cardValue} USD</span>
+                  </div>
+
+                  <div className="bg-amber-100/90 text-zinc-900 border border-amber-700 p-2 rounded text-[11px] leading-tight min-h-[50px] mb-3 italic">
+                    {card.description}
+                  </div>
                 </div>
 
-                {/* AQUÍ ES DONDE HACEMOS LA IMAGEN CUADRADA */}
-                <div className="relative w-full aspect-square bg-zinc-950 border-2 border-zinc-800 rounded overflow-hidden mb-2">
-                  <img
-                    src={card.image}
-                    alt={card.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+                <div className="pt-2 border-t border-amber-700/50 space-y-2">
+                  <form action={addCollectionCard}>
+                    <input type="hidden" name="name" value={card.name} />
+                    <input type="hidden" name="set" value={card.set} />
+                    <input type="hidden" name="rarity" value={card.rarity} />
+                    <input type="hidden" name="quantity" value="1" />
+                    <button
+                      type="submit"
+                      className="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold text-[10px] py-2 rounded transition shadow"
+                    >
+                      + Add to Collection
+                    </button>
+                  </form>
 
-                <div className="text-[10px] text-zinc-400 mb-1 font-mono flex justify-between">
-                  <span>SET: {card.set}</span>
-                  <span className="text-emerald-400 font-bold">${card.cardValue} USD</span>
-                </div>
-
-                <div className="bg-zinc-900/80 text-zinc-300 border border-zinc-800 p-2 rounded text-[11px] leading-tight min-h-[50px] mb-3 italic">
-                  {card.description}
+                  <form action={addWishlistCard}>
+                    <input type="hidden" name="name" value={card.name} />
+                    <input type="hidden" name="set" value={card.set} />
+                    <input type="hidden" name="rarity" value={card.rarity} />
+                    <input type="hidden" name="priority" value="1" />
+                    <button
+                      type="submit"
+                      className="w-full bg-amber-700 hover:bg-amber-600 text-white font-bold text-[10px] py-1.5 rounded transition shadow"
+                    >
+                      + Add to Wishlist
+                    </button>
+                  </form>
                 </div>
               </div>
-
-              <div className="pt-2 border-t border-zinc-800 space-y-2">
-                <form action={addCollectionCard}>
-                  <input type="hidden" name="name" value={card.name} />
-                  <input type="hidden" name="set" value={card.set} />
-                  <input type="hidden" name="rarity" value={card.rarity} />
-                  <input type="hidden" name="quantity" value="1" />
-                  <button
-                    type="submit"
-                    className="w-full bg-violet-600 hover:bg-violet-500 text-white font-bold text-[10px] py-2 rounded transition shadow"
-                  >
-                    + Add to Collection
-                  </button>
-                </form>
-
-                <form action={addWishlistCard}>
-                  <input type="hidden" name="name" value={card.name} />
-                  <input type="hidden" name="set" value={card.set} />
-                  <input type="hidden" name="rarity" value={card.rarity} />
-                  <input type="hidden" name="priority" value="1" />
-                  <button
-                    type="submit"
-                    className="w-full bg-amber-700 hover:bg-amber-600 text-white font-bold text-[10px] py-1.5 rounded transition shadow"
-                  >
-                    + Add to Wishlist
-                  </button>
-                </form>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
