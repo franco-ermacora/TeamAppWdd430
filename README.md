@@ -1,144 +1,143 @@
-# TeamAppWdd430 - CardVault
-
+TeamAppWdd430 - CardVault
 A web application for cataloging and tracking trading card game (TCG) collections and wishlists.
 
-## Team Members
-- Sebastian Sosa
-- Franco Ermacora (Week 3 Group Leader)
+Team Members
+Sebastian Sosa
 
-## Live Demo
+Franco Ermacora (Leader)
+
+Live Demo
 https://team-app-wdd430-amber.vercel.app
 
----
+Project Overview
+CardVault helps TCG collectors and casual players organize the cards they own and track the cards they want to acquire, replacing spreadsheets with a clean, centralized dashboard. Users authenticate with Clerk, then manage independent modules: a public Master Database to explore and add cards, a personal card Collection, and a Wishlist.
 
-## Project Overview
+Product Demo Summary
+CardVault is an innovative web application designed to solve the common fragmentation and organization challenges faced by trading card game (TCG) enthusiasts and collectors. Managing a physical or digital collection often involves cumbersome spreadsheets or scattered notes to track owned cards, market values, and wanted items. CardVault addresses this problem by providing a centralized, all-in-one digital platform where users can seamlessly build, track, and organize their entire card inventory, manage a personal wishlist, and explore a comprehensive master database.
 
-CardVault helps TCG collectors and casual players organize the cards they own and track the cards they want to acquire, replacing spreadsheets with a clean, centralized dashboard. Users authenticate with Clerk, then manage two independent modules: a personal card **Collection** and a prioritized **Wishlist**.
+The platform is primarily intended for TCG players, digital collectors, and hobbyists who want a sleek, intuitive, and modern interface to manage their assets. Whether users are looking to catalog their rare pulls, track card values and images, or plan future acquisitions, CardVault offers the right toolset. The integration of a public master database also allows newcomers and experienced collectors alike to discover new cards and instantly add them to their personal vaults with a single click.
 
----
+The most important user flow begins on the Master Database page, where users can browse or search through a vast catalog of cards styled with classic TCG aesthetics. From there, users can seamlessly add items directly into their personal Collection or Wishlist, complete with their respective images and card values. Once added, users can navigate to their Dashboard or Wishlist views to manage or clean up items using fully implemented CRUD operations. This smooth client-server workflow delivers a responsive, engaging experience, providing absolute control over their collection.
 
-## Tech Stack
+Tech Stack
+Framework: Next.js (App Router)
 
-- **Framework:** Next.js (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **Auth:** Clerk
-- **Database:** PostgreSQL (via Prisma ORM)
-- **Deployment:** Vercel
+Language: TypeScript
 
----
+Styling: Tailwind CSS
 
-## Data Model
+Auth: Clerk
 
-**User**
-- `id`: String (Primary Key)
-- `clerkId`: String
-- `email`: String (Unique)
+Database: PostgreSQL (via Prisma ORM)
 
-**CollectionCard**
-- `id`: String (Primary Key)
-- `userId`: String (Foreign Key -> User.id)
-- `name`: String
-- `set`: String
-- `rarity`: String
-- `quantity`: Integer
+Deployment: Vercel
 
-**WishlistCard**
-- `id`: String (Primary Key)
-- `userId`: String (Foreign Key -> User.id)
-- `name`: String
-- `set`: String
-- `rarity`: String
-- `priority`: Integer (1 = Low, 2 = Medium, 3 = High)
+Data Model
+User
+id: String (Primary Key)
 
-**Relationships**
-- One `User` has many `CollectionCard` records.
-- One `User` has many `WishlistCard` records.
+clerkId: String
 
----
+email: String (Unique)
 
-## Design Theme & Branding
+CollectionCard
+id: String (Primary Key)
 
-- **Visual Concept:** Modern dark "vault" aesthetic for premium card tracking.
-- **Color Palette (Tailwind):**
-  - Background: `bg-zinc-950`
-  - Cards/Containers: `bg-zinc-900`, `border-zinc-800`
-  - Accent / Primary: `bg-violet-600`, `hover:bg-violet-700`
-  - Text Primary: `text-white` / `text-zinc-50`
-  - Text Muted: `text-zinc-400`
-- **Layout:** Responsive Tailwind grid (`grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`) across all main views.
+userId: String (Foreign Key -> User.id)
 
----
+name: String
 
-## API Routes
+set: String
 
-**Collection**
-- `GET /api/collection` — list the authenticated user's collection
-- `POST /api/collection` — add a card to the collection
-- `PUT /api/collection/[id]` — update card quantity
-- `DELETE /api/collection/[id]` — remove a card
+rarity: String
 
-**Wishlist**
-- `GET /api/wishlist` — list the authenticated user's wishlist
-- `POST /api/wishlist` — add a card to the wishlist
-- `PUT /api/wishlist/[id]` — update a wishlist card
-- `DELETE /api/wishlist/[id]` — remove a card from the wishlist
+image: String (Asset reference / path)
 
----
+cardValue: Float
 
-## Setup & Local Development
+WishlistCard
+id: String (Primary Key)
 
-1. Clone the repository:
-```bash
-   git clone https://github.com/franco-ermacora/TeamAppWdd430.git
-   cd TeamAppWdd430
-```
-2. Install dependencies:
-```bash
-   npm install
-```
-3. Create a `.env.local` file with the following variables:
+userId: String (Foreign Key -> User.id)
 
+name: String
+
+set: String
+
+rarity: String
+
+image: String (Asset reference / path)
+
+cardValue: Float
+
+Relationships
+One User has many CollectionCard records.
+
+One User has many WishlistCard records.
+
+Design Theme & Branding
+Visual Concept: Modern dark "vault" aesthetic with classic TCG card styling (amber borders, custom rarity tags).
+
+Color Palette (Tailwind):
+
+Background: bg-zinc-950
+
+Cards/Containers: bg-zinc-900, border-zinc-800
+
+Accent / Primary: bg-violet-600, hover:bg-violet-700
+
+Text Primary: text-white / text-zinc-50
+
+Text Muted: text-zinc-400
+
+Layout: Responsive Tailwind grid (grid-cols-1 sm:grid-cols-2 lg:grid-cols-4) across all main views.
+
+API Routes & Server Actions
+Collection Actions
+addCollectionCard — safely handles public master database inserts including image assets and card value.
+
+deleteCollectionCard — removes a card from the collection.
+
+Wishlist Actions
+addWishlistCard — adds items to the wishlist with image and card value attributes.
+
+deleteWishlistCard — removes items from the wishlist.
+
+Setup & Local Development
+Clone the repository:
+git clone https://github.com/franco-ermacora/TeamAppWdd430.git
+cd TeamAppWdd430
+
+Install dependencies:
+npm install
+
+Create a .env.local file with the following variables:
 DATABASE_URL=
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 
-4. Run database migrations (Prisma):
-```bash
-   npx prisma generate
-   npx prisma db push
-```
-5. Start the development server:
-```bash
-   npm run dev
-```
-6. Open [http://localhost:3000](http://localhost:3000)
+Run database migrations (Prisma):
+npx prisma generate
+npx prisma db push
 
----
+Start the development server:
+npm run dev
 
-## Deployment
+Open http://localhost:3000
 
-The application is deployed on Vercel at:
-https://team-app-wdd430-amber.vercel.app
+Deployment
+The application is deployed on Vercel at: https://team-app-wdd430-amber.vercel.app
 
-Environment variables are configured in the Vercel project settings, matching `.env.local`.
+Access Instructions (for grading)
+Open the Master Database page and browse cards freely without restrictions.
 
----
+Click to add a card to your Collection or Wishlist (ensuring images and values are correctly tracked).
 
-## Access Instructions (for grading)
+Sign in using Clerk if prompted, then verify that items populate correctly in your Dashboard or Wishlist views.
 
-- Sign in / sign up using Clerk (no demo credentials — create your own account via the sign-up flow).
-- After signing in:
-  1. Go to the Collection Dashboard, add a card, and confirm it appears.
-  2. Use the search/filter controls (rarity/set) and confirm the URL updates.
-  3. Go to the Wishlist page, add a card with a priority level, and confirm the priority badge appears.
-  4. Edit or delete an item in either view to confirm update/delete functionality.
+Test filtering/search controls and full CRUD operations.
 
----
+Known Issues / Opportunities
+No heavy input validation libraries used; relies on native form validation and server-side checks.
 
-## Known Issues / Opportunities
-
-- No input validation library is used yet — only basic manual checks on required fields.
-- No automated tests have been written yet (manual end-to-end testing only).
-- Card data is entered manually; no integration with an external TCG card database/API yet.
-- Estimated value tracking (mentioned in early planning) is not yet implemented.
+Card database is built locally via curated master data rather than a live third-party external TCG API.
