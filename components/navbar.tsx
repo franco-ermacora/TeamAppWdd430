@@ -8,12 +8,13 @@ export function Navbar() {
 
   return (
     <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-0 min-h-16 flex flex-col md:flex-row items-center justify-between gap-4">
+        
         <Link href="/" className="text-xl font-extrabold text-violet-500 tracking-tight">
           CardVault
         </Link>
 
-        <nav className="flex items-center gap-5 text-sm font-medium text-zinc-400">
+        <nav className="flex flex-wrap justify-center items-center gap-4 sm:gap-5 text-sm font-medium text-zinc-400">
           <Link href="/" className="hover:text-white transition-colors">
             Home
           </Link>
@@ -48,6 +49,7 @@ export function Navbar() {
             </SignInButton>
           )}
         </div>
+
       </div>
     </header>
   );
